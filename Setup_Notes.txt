@@ -1,0 +1,13 @@
+virtualenv django_env
+django_env\Scripts\activate
+pip install django
+pip list
+	
+(env error Powershell)
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+django-admin startproject django_project
+
+(activate the env)
+C:\Users\manue\Desktop\Environment> django_env\Scripts\activate
+(django_env) PS C:\Users\manue\Desktop\Environment> cd django_env\django_project
