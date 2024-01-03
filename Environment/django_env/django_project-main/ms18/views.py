@@ -7,7 +7,7 @@ from .models import Product
 
 def home(request):
     context = {
-        'posts': Product.objects.all()
+        'products': Product.objects.all()
     }
     return render(request, 'ms18/home.html', context)
 
@@ -15,7 +15,7 @@ def home(request):
 class ProductListView(ListView):
     model = Product
     template_name = 'ms18/home.html'
-    context_object_name = 'posts'
+    context_object_name = 'products'
     ordering = ['-date_posted']
     
 class ProductDetailView(DetailView):
@@ -27,12 +27,12 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     fields = ['title', 'content', 'image']
     
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.employee = self.request.user
         return super().form_valid(form)
     
     def test_func(self):
         product = self.get_object()
-        if self.request.user == product.author:
+        if self.request.user == product.employee:
             return True
         return False
 
@@ -42,12 +42,12 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = ['title', 'content', 'image']
     
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.employee = self.request.user
         return super().form_valid(form)
     
     def test_func(self):
         product = self.get_object()
-        if self.request.user == product.author:
+        if self.request.user == product.employee:
             return True
         return False
 
@@ -57,7 +57,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     def test_func(self):
         product = self.get_object()
-        if self.request.user == product.author:
+        if self.request.user == product.employee:
             return True
         return False
 
