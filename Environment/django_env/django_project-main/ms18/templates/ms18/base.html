@@ -66,7 +66,9 @@
                   <div class="nav-item mr-2"> <!-- Added class: mr-2 -->
                     <a class="nav-link" href="{% url 'profile' %}">Profile</a>
                   </div>
-
+                  {% if auth_user.id == 1 %}
+                  <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                  {% endif %}
                  
                   <form class="nav-item" id="logout-form" method="post" action="{% url 'logout' %}">
                      {% csrf_token %}
@@ -75,9 +77,9 @@
                       <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#logoutModal">Log out</button>
                   </form>
                   </form>
+                  
                 {% else %}
                   <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                  <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
                 {% endif %}
               </div>
             </div>

@@ -12,11 +12,16 @@ def home(request):
     return render(request, 'ms18/home.html', context)
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'ms18/home.html'
     context_object_name = 'products'
     ordering = ['-date_posted']
+    
+    def form_valid(self, form):
+        form.instance.employee = self.request.user
+        return super().form_valid(form)
+    
     
 class ProductDetailView(DetailView):
     model = Product
