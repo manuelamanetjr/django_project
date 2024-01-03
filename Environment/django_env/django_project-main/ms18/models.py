@@ -9,7 +9,7 @@ class Product(models.Model):
     content = models. TextField()
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='product_pics')
+    image = models.ImageField(default='default.png', upload_to='product_pics')
 
     def __str__(self):
         return self.title

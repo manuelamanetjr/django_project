@@ -1,6 +1,17 @@
+pip install virtualenv
 virtualenv django_env
 django_env\Scripts\activate
+cd django_env
+
 pip install django
+python -m pip install bootstrap4
+pip install crispy-bootstrap4
+python -m pip install Pillow
+
+mkdir django_project
+cd django_project
+git init
+git pull https://github.com/manuelamanetjr/django_project.git
 pip list
 
 (env error Powershell)
@@ -13,7 +24,6 @@ C:\Users\manue\Desktop\Environment> django_env\Scripts\activate
 (django_env) PS C:\Users\manue\Desktop\Environment> cd django_env\django_project
 
 python manage.py startapp ms18
-
 python manage.py migrate
 python manage.py createsuperuser
 
@@ -40,6 +50,16 @@ alt solution
 pip install crispy-bootstrap4
 add crispy_bootstrap4 to your list of INSTALLED_APPS.
 
+python -m pip install Pillow
+
+>>> from django.contrib.auth.models import User
+>>> user = User.objects.filter(username='ms18').first()
+>>> user.profile
+>>> user.profile.image
+
+reverse--> returns a url of the route as a string
+
+!!!!!!!!!!!!!!!!
 
 def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
