@@ -21,17 +21,25 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model = Product
     
+    
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'image']
     
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
     
+    def test_func(self):
+        product = self.get_object()
+        if self.request.user == product.author:
+            return True
+        return False
+
+    
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'image']
     
     def form_valid(self, form):
         form.instance.author = self.request.user
