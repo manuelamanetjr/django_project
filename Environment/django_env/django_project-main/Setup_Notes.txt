@@ -39,3 +39,7 @@ python -m pip install bootstrap4
 alt solution
 pip install crispy-bootstrap4
 add crispy_bootstrap4 to your list of INSTALLED_APPS.
+
+
+def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
