@@ -1,4 +1,34 @@
 {% extends 'ms18/base.html' %}
+
 {% block content %}
-    <h1>About Page</h1>
+<div class="d-flex justify-content-center">
+    <form method="post" id="quantityForm" action="/add-to-cart/">
+        {% csrf_token %}
+        <table class="table table-bordered text-center align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Date Posted</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Content</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.employee }}</td>
+                    <td>{{ product.date_posted|date:"F d, Y" }}</td>
+                    <td><a href="{% url 'product-detail' product.id %}">{{ product.title }}</a></td>
+                    <td><input type="number" class="form-control" name="quantity_{{ product.id }}" value="0" min="0"></td>
+                    <td>{{ product.content }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary" value="Add Selected Items to Cart">
+        </div>
+    </form>
+</div>
 {% endblock content %}

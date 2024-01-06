@@ -27,5 +27,13 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("product-detail", kwargs={"pk": self.pk})
     
-    
 
+class PurchaseOrder(models.Model):
+    employee = models.CharField(max_length=100)
+    date_posted = models.DateField()
+    title = models.CharField(max_length=200)
+    quantity = models.IntegerField(default=0)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title  # Return a string representation of the object
