@@ -3,18 +3,12 @@
         <article class="media content-section">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="#">{{ object.employee }}</a>
-                    <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
-                    {% if object.employee == user%}
-                    <div> 
-                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'product-update' object.id %}"> Update </a>
-                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'product-delete' object.id %}"> Delete </a>
-                    </div>                       
-                    {% endif %}
-                </div>
-                <h2 class="article-title">{{ object.title }}</h2>
-                <p class="article-content">{{ object.content }}</p>
-                <img src="{{ object.image.url }}">
+                    <small class="text-muted">{{ object.PROD_DATE_POSTED|date:"F d, Y" }}</small>
+                <h2 class="article-title">{{ object.PROD_NAME }}</h2>
+                <h6 class="article-title">Quantity: {{ object.PROD_QUANTITY }}</h6>
+                <h6 class="article-title">Price: ₱{{ object.PROD_PRICE }}</h6>
+                <p class="article-content">{{ object.PROD_DESCRIPTION }}</p>
+                <img src="{{ object.PROD_IMAGE.url }}">
 
             </div>
         </article> 

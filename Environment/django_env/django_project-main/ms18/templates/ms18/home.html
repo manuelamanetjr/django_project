@@ -4,12 +4,11 @@
         <article class="media content-section">           
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="#">{{ product.employee }}</a>
-                    <small class="text-muted">{{ product.date_posted|date:"F d, Y" }}</small>
+                    <small class="text-muted">{{ product.PROD_DATE_POSTED|date:"F d, Y" }}</small>
                 </div>
-                <h2><a class="article-title" href="{% url 'product-detail' product.id %}">{{ product.title }}</a></h2>
-                <p class="article-content">{{ product.content }}</p>
-                <img class="article-img" src="{{ product.image.url }}">
+                <h2><a class="article-title" href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></h2>
+                <p class="article-content">{{ product.PROD_DESCRIPTION }}</p>
+                <img class="article-img" src="{{ product.PROD_IMAGE.url }}">
             </div>
         </article>
     {% endfor %}

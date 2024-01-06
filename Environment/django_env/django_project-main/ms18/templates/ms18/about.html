@@ -7,21 +7,19 @@
         <table class="table table-bordered text-center align-middle">
             <thead>
                 <tr>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Date Posted</th>
-                    <th scope="col">Title</th>
+                    <th scope="col">Date Added</th>
+                    <th scope="col">Product Name</th>                    
                     <th scope="col">Quantity</th>
-                    <th scope="col">Content</th>
+                    <th scope="col">Product Description</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                 <tr>
-                    <td>{{ product.employee }}</td>
-                    <td>{{ product.date_posted|date:"F d, Y" }}</td>
-                    <td><a href="{% url 'product-detail' product.id %}">{{ product.title }}</a></td>
+                    <td>{{ product.PROD_DATE_POSTED|date:"F d, Y" }}</td>
+                    <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
                     <td><input type="number" class="form-control" name="quantity_{{ product.id }}" value="0" min="0"></td>
-                    <td>{{ product.content }}</td>
+                    <td>{{ product.PROD_DESCRIPTION }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
