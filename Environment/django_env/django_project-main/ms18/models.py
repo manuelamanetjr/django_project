@@ -33,6 +33,7 @@ class PurchaseOrder(models.Model):
     ORD_DATE_POSTED = models.DateTimeField(default=timezone.now)
     ORD_NAME = models.CharField(max_length=200)
     ORD_QUANTITY = models.IntegerField(default=0)
+    ORD_PRICE = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
     ORD_DESCRIPTION = models.TextField()
 
     def __str__(self):

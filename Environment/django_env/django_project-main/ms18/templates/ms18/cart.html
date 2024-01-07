@@ -2,11 +2,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <script>
-             function confirmRemoval() {
-                 return confirm('Are you sure you want to remove this item from your cart?');
-            }
-        </script>
     <meta charset="UTF-8">
     <title>Your Cart</title>
     <!-- Include Bootstrap CSS -->
@@ -49,7 +44,7 @@
 <body>
     <!-- Header section (copied from provided header) -->
     <header class="site-header">
-        <!-- Header content (copied from provided header) -->
+
     </header>
 
     <!-- Cart content -->
@@ -62,7 +57,6 @@
                             <div>
                                 <span>{{ item.ORD_NAME }}</span>
                                 <span>Quantity: {{ item.ORD_QUANTITY }}</span>
-                                <!-- Add other information as needed -->
                             </div>
                             <form method="POST" action="{% url 'remove-from-cart' item.id %}">
                                 {% csrf_token %}
