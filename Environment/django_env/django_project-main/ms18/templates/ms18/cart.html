@@ -50,24 +50,24 @@
     <!-- Cart content -->
     <div class="cart-container">
         <h1>Your Cart</h1>
-                    {% if cart_items %}
-                <ul class="list-group cart-items">
-                    {% for item in cart_items %}
-                        <li class="list-group-item cart-item">
-                            <div>
-                                <span>{{ item.ORD_NAME }}</span>
-                                <span>Quantity: {{ item.ORD_QUANTITY }}</span>
-                            </div>
-                            <form method="POST" action="{% url 'remove-from-cart' item.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                            </form>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="empty-cart">Cart is currently empty.</p>
-            {% endif %}
+        {% if cart_items %}
+            <ul class="list-group cart-items">
+                {% for item in cart_items %}
+                    <li class="list-group-item cart-item">
+                        <div>
+                            <span>{{ item.ORD_NAME }}</span>
+                            <span>Quantity: {{ item.ORD_QUANTITY }}</span>
+                        </div>
+                        <form method="POST" action="{% url 'remove-from-cart' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-cart">Cart is currently empty.</p>
+        {% endif %}
     </div>
 
     <!-- Bootstrap and other JS scripts -->

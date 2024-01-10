@@ -4,105 +4,181 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+    <!-- Your additional styles -->
     <link rel="stylesheet" type="text/css" href="{% static 'ms18/main.css' %}">
-    
+    <style>
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #865DA8;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 75px;
+        }
+
+        .sidebar a {
+            padding: 12px 12px 12px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white; /* Set text color to white */
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;  
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-toggler {
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            height: 35px;
+            margin-left: -545px; /* Adjust the margin as needed */
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .Log-Out {
+            padding-left: 50px;
+            font-size: 18px;
+            color: white; /* Set text color to white */
+        }
+
+        /* Set text color for Add Product link */
+        .add-product {
+            color: white !important;
+        }
+    </style>
+
     {% if title %}
         <title>MS18 - {{ title }}</title>
     {% else %}
         <title>MS18</title>
     {% endif %}
-
-    <link rel="icon" type="image/png" href="{% static 'ms18/MS18_logo.png' %}">
-
 </head>
 <body>
-            <!-- Modal for Logout Confirmation -->
-            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    Are you sure you want to log out?
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form id="logoutForm" method="post" action="{% url 'logout' %}">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-danger">Log out</button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a class="nav-link" href="{% url 'ms18-home' %}">Home</a>
+        <a class="nav-link" href="{% url 'ms18-about' %}">Purchase Order</a>
+        <a class="nav-link add-product" href="{% url 'product-create' %}">Add Product</a>
+        {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+        {% else %}
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+    
 
-
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-          <div class="container">
-            <img src="{% static 'ms18/MS18_logo.png' %}" alt="MS18 Logo" class="logo-img">
-            <a class="navbar-brand mr-4" href="{% url 'ms18-home' %}">MS18 Computer Supplies & Services</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-              <div class="navbar-nav mr-auto">
-                <a class="nav-item nav-link" href="{% url 'ms18-home' %}">Home</a>
-                <a class="nav-item nav-link" href="{% url 'ms18-about' %}">Purchase Order</a>
-
-              </div>
-              <!-- Navbar Right Side -->
-              <!-- Navbar Right Side -->
-                <div class="navbar-nav ml-auto">
-                  {% if user.is_authenticated %}
-                    <div class="nav-item mr-2">
-                      <a class="nav-link" href="{% url 'product-create' %}">New Product</a>
-                    </div>
-                    <div class="nav-item mr-2">
-                      <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                    </div>
-                    <div class="nav-item mr-2">
-                      <a class="nav-link" href="{% url 'cart' %}">
+    <div id="main">
+        <header class="site-header">
+            <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+                <span style="font-size:28px;cursor:pointer" onclick="toggleNav()">☰</span>
+                <a class="navbar-brand" href="{% url 'ms18-home' %}">
+                    <span class="navbar-toggler" onclick="toggleNav()">☰</span>
+                    <img src="{% static 'ms18/MS18_logo.png' %}" alt="MS18 Logo" class="logo-img">
+                    MS18 Computer Supplies & Services
+                </a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="{% url 'cart' %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
-                          <path d="M2 1.5a.5.5 0 0 1 .5-.5h1.7l.59 1.482 1.654 8.272a.5.5 0 0 0 .488.346h7.178a.5.5 0 0 0 .49-.416l1.2-6a.5.5 0 0 0-.488-.584H4.23l-.213-1.062L3.29 3.5H13a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H5.646l-.192.962a1 1 0 0 1-.984.832H2V1.5z"/>
-                          <circle cx="6.5" cy="14.5" r="1.5"/>
-                          <circle cx="13.5" cy="14.5" r="1.5"/>
+                            <path d="M2 1.5a.5.5 0 0 1 .5-.5h1.7l.59 1.482 1.654 8.272a.5.5 0 0 0 .488.346h7.178a.5.5 0 0 0 .49-.416l1.2-6a.5.5 0 0 0-.488-.584H4.23l-.213-1.062L3.29 3.5H13a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H5.646l-.192.962a1 1 0 0 1-.984.832H2V1.5z"/>
+                            <circle cx="6.5" cy="14.5" r="1.5"/>
+                            <circle cx="13.5" cy="14.5" r="1.5"/>
                         </svg> Cart
-                      </a>
-                    </div>
-                    <form class="nav-item" id="logout-form" method="post" action="{% url 'logout' %}">
-                      {% csrf_token %}
-                      <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#logoutModal">Log out</button>
-                    </form>
-                  {% else %}
-                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                  {% endif %}
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a class="nav-link Log-Out" href="#" onclick="confirmLogout()">Log out</a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    {% endif %}
                 </div>
+            </nav>
+        </header>
+
+        <main role="main" class="container">
+            <div class="row">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
             </div>
-          </div>
-        </nav>
-    </header>
-      <main role="main" class="container">
-        <div class="col-md-8">
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-              </div>
-            {% endfor %}
-          {% endif %}
-          {% block content %}{% endblock %}
-        </div>  
-      </main>  
+        </main>
+    </div>
+
+    <!-- Bootstrap JS and Other Scripts -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
+
+    <!-- Custom Script to Toggle Navigation Sidebar -->
+    <script>
+        function toggleNav() {
+            var sidebar = document.getElementById("mySidebar");
+            var main = document.getElementById("main");
+            if (sidebar.style.width === "220px") {
+                sidebar.style.width = "0";
+                main.style.marginLeft = "0";
+            } else {
+                sidebar.style.width = "220px";
+                main.style.marginLeft = "220px";
+            }
+        }
+    
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    
+        function confirmLogout() {
+            var confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                window.location.href = "{% url 'logout' %}";
+            }
+        }
+    </script>   
+  </body>
 </html>
+    

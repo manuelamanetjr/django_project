@@ -117,4 +117,5 @@ def remove_from_cart(request, cart_id):
         messages.success(request, "Item removed from cart!")
         return redirect('cart')
     else:
-        return HttpResponseBadRequest("Invalid request method")
+        return HttpResponseBadRequest("Invalid request method") 
+    
