@@ -1,0 +1,14 @@
+{% extends 'ms18/base.html' %}
+
+{% block content %}
+  <h2>Suppliers</h2>
+  <ul>
+    {% for supplier in suppliers %}
+      <li>
+        <strong>{{ supplier.SUPPLIER_NAME }}</strong><br>
+        Address: {{ supplier.SUPPLIER_ADDRESS }}<br>
+        Phone: {{ supplier.SUPPLIER_PHONE }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
