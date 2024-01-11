@@ -93,6 +93,31 @@
     {% endif %}
 </head>
 <body>
+
+    <!-- Modal for Logout Confirmation -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form id="logoutForm" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Log out</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         <a class="nav-link" href="{% url 'ms18-home' %}">Home</a>
@@ -127,7 +152,10 @@
                         </svg> Cart
                     </a>
                     {% if user.is_authenticated %}
-                    <a class="nav-link Log-Out" href="#" onclick="confirmLogout()">Log out</a>
+                        <form class="nav-item" id="logout-form" method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#logoutModal">Log out</button>
+                        </form>
                     {% else %}
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
                         
