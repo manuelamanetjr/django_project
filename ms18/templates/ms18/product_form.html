@@ -7,11 +7,15 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4 ">Add Product</legend>
                 {{ form|crispy }}
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit" >Add</button>
+                <button class="btn btn-outline-info" type="submit">Add</button>
             </div>
-            
         </form>
     </div>
 {% endblock content %}

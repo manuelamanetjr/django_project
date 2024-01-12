@@ -24,11 +24,17 @@
             margin-bottom: 20px;
         }
         .cart-item {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa; /* Light gray background */
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .cart-item span {
+            margin-right: 10px;
         }
         .empty-cart {
             padding: 20px;
@@ -47,22 +53,19 @@
         <h1>Orders</h1>
         <a href="{% url 'ms18-home' %}" class="btn btn-primary mb-3">Back to Home</a>
         {% if cart_items %}
-            <ul class="list-group cart-items">
-                {% for item in cart_items %}
-                    <li class="list-group-item cart-item">
+            <div class="list-group">
+                {% for order in cart_items %}
+                    <div class="list-group-item cart-item">
                         <div>
-                            <span>{{ item.ORD_NAME }}</span>
-                            <span>Quantity: {{ item.ORD_QUANTITY }}</span>
+                            <span class="font-weight-bold">{{ order.ORD_NAME }}</span>
+                            <span class="badge badge-info">Quantity: {{ order.ORD_QUANTITY }}</span>
+                            <span>Status: <span class="badge {% if order.status == 'Approved' %}badge-success{% elif order.status == 'Rejected' %}badge-danger{% else %}badge-warning{% endif %}">{{ order.status }}</span></span>
                         </div>
-                        <form method="POST" action="{% url 'remove-from-cart' item.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                        </form>
-                    </li>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
-            <p class="empty-cart">Cart is currently empty.</p>
+            <p class="empty-cart">No orders.</p>
         {% endif %}
     </div>
 {% endblock content %}

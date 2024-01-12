@@ -21,10 +21,15 @@ class Product(models.Model):
     PROD_PRICE = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True, blank=True)
 
+
     def __str__(self):
         return self.PROD_NAME
     
     def save(self, *args, **kwargs):
+        if self.PROD_PRICE is not None and self.PROD_PRICE < 0:
+            self.PROD_PRICE = abs(self.PROD_PRICE)
+        if self.PROD_QUANTITY is not None and self.PROD_QUANTITY < 0:
+            self.PROD_QUANTITY = abs(self.PROD_QUANTITY)
         super().save(*args, **kwargs)
         
         img = Image.open(self.PROD_IMAGE.path)
@@ -37,6 +42,7 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("product-detail", kwargs={"pk": self.pk})
     
+    
 class PurchaseOrder(models.Model):
     ORD_EMPLOYEE = models.CharField(max_length=100)
     ORD_DATE_POSTED = models.DateTimeField(default=timezone.now)
@@ -44,10 +50,24 @@ class PurchaseOrder(models.Model):
     ORD_QUANTITY = models.IntegerField(default=0)
     ORD_PRICE = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
     ORD_DESCRIPTION = models.CharField(max_length=200)
+    
+    APPROVED = 'Approved'
+    PENDING = 'Pending'
+    REJECTED = 'Rejected'
+    STATUS_CHOICES = [
+        (APPROVED, 'Approved'),
+        (PENDING, 'Pending'),
+        (REJECTED, 'Rejected'),
+    ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=PENDING,
+    )
 
     def __str__(self):
         return self.ORD_NAME 
-    
+
 class Cart(models.Model):
     CART_ID = models.AutoField(primary_key=True)
     CART_QUANTITY = models.IntegerField(default=0)
@@ -59,3 +79,19 @@ class Cart(models.Model):
         return f"Cart ID: {self.cart_id} - Product: {self.product.PROD_NAME}"
 
 
+class Requisition(models.Model):
+    REQ_ID = models.AutoField(primary_key=True)
+    REQ_EMPLOYEE = models.CharField(max_length=100)
+    APPROVED = 'Approved'
+    PENDING = 'Pending'
+    REJECTED = 'Rejected'
+    STATUS_CHOICES = [
+        (APPROVED, 'Approved'),
+        (PENDING, 'Pending'),
+        (REJECTED, 'Rejected'),
+    ]
+    REQ_STATUS = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=PENDING,
+    )

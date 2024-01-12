@@ -4,6 +4,9 @@
 <div class="d-flex justify-content-center">
     <form method="post" id="quantityForm" action="/add-to-cart/">
         {% csrf_token %}
+        <div class="d-flex justify-content-center">
+            <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
+        </div>
         <table class="table table-bordered text-center align-middle">
             <thead>
                 <tr>
@@ -13,7 +16,7 @@
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
                     <th scope="col">Product Description</th>
-                </tr>
+                </tr>   
             </thead>
             <tbody>
                 {% for product in products %}
@@ -29,8 +32,25 @@
             </tbody>
         </table>
         <div class="text-center">
-            <input type="submit" class="btn btn-primary" value="Add Selected Items to Cart">
+            <input type="submit" class="btn btn-primary" value="Order">
         </div>
     </form>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchSupplier").on("input", function () {
+            var searchValue = $(this).val().toLowerCase();
+
+            $("tbody tr").each(function () {
+                var supplierName = $(this).find("td:nth-child(2)").text().toLowerCase();
+                if (supplierName.includes(searchValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
 </div>
 {% endblock content %}

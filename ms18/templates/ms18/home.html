@@ -9,6 +9,7 @@
                     <th scope="col">Stock</th>
                     <th scope="col">Price</th>
                     <th scope="col">Product Description</th>
+                    <th scope="col">Supply Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,9 +20,45 @@
                     <td>{{ product.PROD_QUANTITY }}</td>
                     <td>₱{{ product.PROD_PRICE }}</td>
                     <td>{{ product.PROD_DESCRIPTION }}</td>
+                    <td class="{% if product.PROD_QUANTITY < 10 %}verylow
+                               {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
+                               {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
+                               {% else %}veryhigh
+                               {% endif %}">    
+                        {% if product.PROD_QUANTITY < 10 %}
+                            Very Low
+                        {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
+                            Low
+                        {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
+                            High
+                        {% else %}
+                            Very High    
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <style>
+            .verylow {
+                background-color: red;
+                color: white;
+            }
+        
+            .low {
+                background-color: orange;
+                color: white;
+            }
+        
+            .high {
+                background-color: yellowgreen;
+                color: white;
+            }
+
+            .veryhigh {
+                background-color: green;
+                color: white;
+            }
+        </style> 
 </div>
 {% endblock content %}

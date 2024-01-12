@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
+from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
+from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from  django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Product, PurchaseOrder, Cart, Supplier
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
-
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 
 
@@ -48,7 +53,6 @@ class ProductDetailView(DetailView):
             raise Http404("Supplier does not exist for this product.")
 
         return context
-    
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     fields = ['PROD_NAME', 'PROD_DESCRIPTION', 'PROD_IMAGE', 'PROD_QUANTITY', 'PROD_PRICE', 'supplier']
@@ -65,8 +69,15 @@ class SupplierCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         # You can add any additional logic here before saving the form
         return super().form_valid(form)
-        
+    
+    def clean_PROD_PRICE(self):
+        prod_price = self.cleaned_data.get('PROD_PRICE')
 
+        # Check if the price is a positive floating-point number
+        if prod_price is not None and prod_price <= 0:
+            raise ValidationError('Price must be a positive number.')
+
+        return prod_price
     
     
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -80,6 +91,15 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         product = self.get_object()
         return True
+    
+    def clean_PROD_PRICE(self):
+        prod_price = self.cleaned_data['PROD_PRICE']
+
+        # Check if the price is a positive floating-point number
+        if prod_price <= 0:
+            raise ValidationError('Price must be a positive number.')
+
+        return prod_price
         
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -176,3 +196,68 @@ def requisition(request):
         'suppliers': Supplier.objects.all()
     }
     return render(request, 'ms18/requisition.html', context)
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductUpdateView(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')  # Redirect to a success page or another view
+    else:
+        form = ProductUpdateView()
+
+    return render(request, 'your_template.html', {'form': form})
+
+def admin_review_orders(request):
+    # Retrieve pending orders for admin review
+    pending_orders = PurchaseOrder.objects.filter(status=PurchaseOrder.PENDING)
+
+    context = {
+        'pending_orders': pending_orders
+    }
+    return render(request, 'ms18/admin_review_orders.html', context)
+
+
+@transaction.atomic
+def admin_approve_order(request, order_id):
+    order = get_object_or_404(PurchaseOrder, id=order_id)
+
+    # Update the status to Approved
+    order.status = PurchaseOrder.APPROVED
+    order.save()
+
+    try:
+        product = Product.objects.get(PROD_NAME=order.ORD_NAME)
+        original_quantity = product.PROD_QUANTITY
+        product.PROD_QUANTITY += order.ORD_QUANTITY
+        product.save()
+
+        # Print statements for debugging
+        print(f"Order {order.id} approved. Inventory updated: {original_quantity} -> {product.PROD_QUANTITY}")
+        print(f"Product details: {product.PROD_NAME}, Quantity: {product.PROD_QUANTITY}")
+        messages.success(request, f'Order {order.id} approved. Inventory updated.')
+    except Product.DoesNotExist:
+        messages.error(request, f"Product {order.ORD_NAME} does not exist.")
+    except Exception as e:
+        messages.error(request, f"An error occurred: {e}")
+
+    return redirect('admin_review_orders')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_reject_order(request, order_id):
+    order = get_object_or_404(PurchaseOrder, id=order_id)
+    order.status = PurchaseOrder.REJECTED
+    order.save()
+    messages.success(request, f'Order {order.id} rejected.')
+    return redirect('admin_review_orders')
+
+
+def inventory(request):
+    products = Product.objects.all()
+
+    for product in products:
+        print(f"Product: {product.PROD_NAME}, Quantity: {product.PROD_QUANTITY}")
+
+    return render(request, 'ms18/home.html', {'products': products})
+

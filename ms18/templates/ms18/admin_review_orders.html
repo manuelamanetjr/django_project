@@ -1,0 +1,20 @@
+{% extends 'ms18/base.html' %}
+
+{% block content %}
+    <h1>Pending Orders</h1>
+    <ul>
+        {% for order in pending_orders %}
+            <li>
+                Order ID: {{ order.id }} - {{ order.ORD_NAME }} - Quantity: {{ order.ORD_QUANTITY }}
+                <form method="post" action="{% url 'admin_approve_order' order.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="post" action="{% url 'admin_reject_order' order.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Reject</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
