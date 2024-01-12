@@ -1,0 +1,27 @@
+{% extends 'ms18/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <table class="table table-bordered text-center align-middle">
+        <thead>
+            <tr>
+                <th scope="col">Product Name</th>                    
+                <th scope="col">Supplier</th>
+                <th scope="col">In Stock</th>
+                <th scope="col">Price</th>
+                <th scope="col">Product Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
+                <td>{{ product.supplier.SUPPLIER_NAME }}</td>
+                <td>{{ product.PROD_QUANTITY }}</td>
+                <td>₱{{ product.PROD_PRICE }}</td> 
+                <td>{{ product.PROD_DESCRIPTION }}</td>
+            </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

@@ -19,4 +19,10 @@ urlpatterns = [
    #path('about/cart/', views.cart_view, name='about-cart'),  # Add a URL pattern for the about/cart page
     path('supplier/new/', SupplierCreateView.as_view(), name='supplier-create'),
     path('purchaseOrder/', views.about, name='ms18-about'),
+    path('requisition/', views.requisition, name='requisition'),
+    
+    
+
+    
+
 ]

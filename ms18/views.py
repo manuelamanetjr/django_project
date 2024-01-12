@@ -91,7 +91,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 @login_required
 def about(request):
      # Retrieve products ordered by date_posted in descending order (newest first)
-    products = Product.objects.order_by('-PROD_DATE_POSTED')
+    products = Product.objects.all()
     return render(request, 'ms18/about.html', {'products': products})
     
     
@@ -165,3 +165,10 @@ def add_supplier_to_product(request, product_id):
 
         messages.success(request, f'Supplier "{supplier_name}" added to {product.PROD_NAME}.')
         return redirect(reverse('product-detail', args=[product_id]))
+
+def requisition(request):
+    context = {
+        'products': Product.objects.all(),
+        'suppliers': Supplier.objects.all()
+    }
+    return render(request, 'ms18/requisition.html', context)
