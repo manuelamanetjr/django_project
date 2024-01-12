@@ -24,7 +24,6 @@ class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'ms18/home.html'
     context_object_name = 'products'
-    ordering = ['-PROD_DATE_POSTED']
     
     def form_valid(self, form):
         form.instance.employee = self.request.user

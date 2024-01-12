@@ -15,7 +15,7 @@ class Supplier(models.Model):
 class Product(models.Model):
     PROD_NAME = models.CharField(max_length=100)
     PROD_DESCRIPTION = models.CharField(max_length=200)
-    PROD_DATE_POSTED = models.DateTimeField(default = timezone.now)
+    #PROD_DATE_POSTED = models.DateTimeField(default = timezone.now)
     PROD_IMAGE = models.ImageField(default='default.png', upload_to='product_pics')
     PROD_QUANTITY = models.IntegerField(default=0)
     PROD_PRICE = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  

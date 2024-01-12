@@ -2,9 +2,6 @@
 {% block content %}   
     <article class="media content-section">
         <div class="media-body">
-            <div class="article-metadata">
-                <small class="text-muted">{{ object.PROD_DATE_POSTED|date:"F d, Y" }}</small>
-            </div>
             <h2 class="article-title">{{ object.PROD_NAME }}</h2>
             <h6 class="article-title">Quantity: {{ object.PROD_QUANTITY }}</h6>
             <h6 class="article-title">Price: ₱{{ object.PROD_PRICE }}</h6>
