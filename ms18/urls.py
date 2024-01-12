@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView
+from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView
 from .views import add_supplier_to_product
 from . import views
 
@@ -17,5 +17,6 @@ urlpatterns = [
     path('add-supplier-to-product/<int:product_id>/', add_supplier_to_product, name='add-supplier-to-product'),
    #path('clear-cart/', views.clear_cart, name='clear-cart'),
    #path('about/cart/', views.cart_view, name='about-cart'),  # Add a URL pattern for the about/cart page
-    path('about/', views.about, name='ms18-about'),
+    path('supplier/new/', SupplierCreateView.as_view(), name='supplier-create'),
+    path('purchaseOrder/', views.about, name='ms18-about'),
 ]

@@ -7,15 +7,14 @@ from PIL import Image
 class Supplier(models.Model):
     SUPPLIER_ID = models.AutoField(primary_key=True)
     SUPPLIER_NAME = models.CharField(max_length=100)
-    SUPPLIER_ADDRESS = models.TextField()
-    SUPPLIER_PHONE = models.CharField(max_length=20)
-
+    SUPPLIER_ADDRESS = models.CharField(max_length=200)
+    SUPPLIER_PHONE = models.CharField(max_length=12)
     def __str__(self):
         return self.SUPPLIER_NAME
     
 class Product(models.Model):
     PROD_NAME = models.CharField(max_length=100)
-    PROD_DESCRIPTION = models. TextField()
+    PROD_DESCRIPTION = models.CharField(max_length=200)
     PROD_DATE_POSTED = models.DateTimeField(default = timezone.now)
     PROD_IMAGE = models.ImageField(default='default.png', upload_to='product_pics')
     PROD_QUANTITY = models.IntegerField(default=0)
@@ -44,7 +43,7 @@ class PurchaseOrder(models.Model):
     ORD_NAME = models.CharField(max_length=200)
     ORD_QUANTITY = models.IntegerField(default=0)
     ORD_PRICE = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
-    ORD_DESCRIPTION = models.TextField()
+    ORD_DESCRIPTION = models.CharField(max_length=200)
 
     def __str__(self):
         return self.ORD_NAME 

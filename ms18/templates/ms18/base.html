@@ -127,9 +127,10 @@
             <a class="nav-link" href="{% url 'register' %}">Add Account</a>
         {% endif %}
         {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'supplier-create' %}">Add Supplier</a>
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>
         {% else %}
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
         {% endif %}
     </div>
     
@@ -144,14 +145,22 @@
                     MS18 Computer Supplies & Services
                 </a>
                 <div class="navbar-nav">
-                    <a class="nav-link" href="{% url 'cart' %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
-                            <path d="M2 1.5a.5.5 0 0 1 .5-.5h1.7l.59 1.482 1.654 8.272a.5.5 0 0 0 .488.346h7.178a.5.5 0 0 0 .49-.416l1.2-6a.5.5 0 0 0-.488-.584H4.23l-.213-1.062L3.29 3.5H13a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H5.646l-.192.962a1 1 0 0 1-.984.832H2V1.5z"/>
-                            <circle cx="6.5" cy="14.5" r="1.5"/>
-                            <circle cx="13.5" cy="14.5" r="1.5"/>
-                        </svg> Cart
-                    </a>
+                    <div>
+                        <img class="logo-img" src="{{ user.profile.image.url }}">
+                    </div>
+                    <div>
+                        <a class="nav-link" href="{% url 'cart' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
+                                <path d="M2 1.5a.5.5 0 0 1 .5-.5h1.7l.59 1.482 1.654 8.272a.5.5 0 0 0 .488.346h7.178a.5.5 0 0 0 .49-.416l1.2-6a.5.5 0 0 0-.488-.584H4.23l-.213-1.062L3.29 3.5H13a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H5.646l-.192.962a1 1 0 0 1-.984.832H2V1.5z"/>
+                                <circle cx="6.5" cy="14.5" r="1.5"/>
+                                <circle cx="13.5" cy="14.5" r="1.5"/>
+                            </svg> Cart
+                        </a>
+                    </div>
+                    
                     {% if user.is_authenticated %}
+                        
+
                         <form class="nav-item" id="logout-form" method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
                             <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#logoutModal">Log out</button>
@@ -165,7 +174,7 @@
         </header>
 
         <main role="main" class="container">
-            <div class="row">
+            <div>
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }}">

@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from django.http import Http404
 from django.http import HttpResponseBadRequest
+from  django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Product, PurchaseOrder, Cart, Supplier
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
+
 
 
 
@@ -56,7 +58,17 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         form.instance.employee = self.request.user
         return super().form_valid(form)
     
+class SupplierCreateView(LoginRequiredMixin, CreateView):
+    model = Supplier
+    fields = ['SUPPLIER_NAME', 'SUPPLIER_ADDRESS', 'SUPPLIER_PHONE']
+    success_url = '/'
 
+    def form_valid(self, form):
+        # You can add any additional logic here before saving the form
+        return super().form_valid(form)
+        
+
+    
     
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
@@ -77,7 +89,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
-
+@login_required
 def about(request):
      # Retrieve products ordered by date_posted in descending order (newest first)
     products = Product.objects.order_by('-PROD_DATE_POSTED')
@@ -137,13 +149,6 @@ def remove_from_cart(request, cart_id):
     else:
         return HttpResponseBadRequest("Invalid request method") 
 
-class SupplierCreateView(LoginRequiredMixin, CreateView):
-    model = Supplier
-    fields = ['SUPPLIER_NAME', 'SUPPLIER_ADDRESS', 'SUPPLIER_PHONE']
-
-    def form_valid(self, form):
-        # You can add any additional logic here before saving the form
-        return super().form_valid(form)
     
 class SupplierListView(ListView):
     model = Supplier
