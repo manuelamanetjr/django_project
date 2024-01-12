@@ -71,12 +71,16 @@ class SupplierCreateView(LoginRequiredMixin, CreateView):
     
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['PROD_NAME', 'PROD_DESCRIPTION', 'PROD_IMAGE']
+    fields = ['PROD_NAME', 'PROD_DESCRIPTION', 'PROD_PRICE', 'PROD_IMAGE']
     
     def form_valid(self, form):
         form.instance.employee = self.request.user
         return super().form_valid(form)
-    
+        
+    def test_func(self):
+        product = self.get_object()
+        return True
+        
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product

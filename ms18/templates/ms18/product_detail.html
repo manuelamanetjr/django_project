@@ -9,5 +9,8 @@
             <p class="article-content">Supplier: {{ supplier_name }}</p>
             <img src="{{ object.PROD_IMAGE.url }}">
         </div>
+        <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'product-update' object.id %}"> Update </a>
+        </div>
     </article>
 {% endblock content %}
