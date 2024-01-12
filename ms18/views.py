@@ -6,7 +6,7 @@ from django.http import HttpResponseBadRequest
 from  django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Product, PurchaseOrder, Cart, Supplier
+from .models import Product, PurchaseOrder, Cart, Supplier, RequestedProduct, Requisition
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib import messages
@@ -149,6 +149,7 @@ def add_to_cart(request):
         messages.error(request, 'Please log in to add items to the cart.')
         return redirect('login')  # Redirect to the login page if the user is not authenticated
  
+
     
 def cart(request):
     # Retrieve items in the cart based on the logged-in user
@@ -162,6 +163,8 @@ def cart(request):
         'cart_items': cart_items
     }
     return render(request, 'ms18/cart.html', context)
+
+
 
 def remove_from_cart(request, cart_id):
     if request.method == 'POST':
@@ -190,12 +193,7 @@ def add_supplier_to_product(request, product_id):
         messages.success(request, f'Supplier "{supplier_name}" added to {product.PROD_NAME}.')
         return redirect(reverse('product-detail', args=[product_id]))
 
-def requisition(request):
-    context = {
-        'products': Product.objects.all(),
-        'suppliers': Supplier.objects.all()
-    }
-    return render(request, 'ms18/requisition.html', context)
+
 
 def add_product(request):
     if request.method == 'POST':
@@ -260,4 +258,24 @@ def inventory(request):
         print(f"Product: {product.PROD_NAME}, Quantity: {product.PROD_QUANTITY}")
 
     return render(request, 'ms18/home.html', {'products': products})
+
+
+@login_required
+def about(request):
+     # Retrieve products ordered by date_posted in descending order (newest first)
+    products = Product.objects.all()
+    return render(request, 'ms18/about.html', {'products': products})
+
+def view_requisitions(request):
+    requisitions = Requisition.objects.all()
+
+    return render(request, 'ms18/view_requisitions.html', {'requisitions': requisitions})
+    
+def home(request):
+    context = {
+        'products': Product.objects.all(),
+        'suppliers': Supplier.objects.all()
+    }
+    return render(request, 'ms18/home.html', context)
+
 

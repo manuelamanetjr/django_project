@@ -70,3 +70,5 @@ insert into ms18_supplier values ('2', 'Nutech', 'Banawa Cebu City', '0954876354
 insert into ms18_supplier values ('3', 'Green PC', 'Lapu Lapu Cebu City', '09791524836');
 
 insert into ms18_product values ('1', 'Keyboard', 'LGBT lights', null, '', '200', '10', '1');
+
+requested_products

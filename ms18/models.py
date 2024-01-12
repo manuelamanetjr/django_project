@@ -82,6 +82,11 @@ class Cart(models.Model):
 class Requisition(models.Model):
     REQ_ID = models.AutoField(primary_key=True)
     REQ_EMPLOYEE = models.CharField(max_length=100)
+    REQ_DATE_POSTED = models.DateTimeField(default=timezone.now)
+    REQ_NAME = models.CharField(max_length=200)
+    REQ_QUANTITY = models.IntegerField(default=0)
+    REQ_DESCRIPTION = models.CharField(max_length=200)
+    
     APPROVED = 'Approved'
     PENDING = 'Pending'
     REJECTED = 'Rejected'
@@ -95,3 +100,15 @@ class Requisition(models.Model):
         choices=STATUS_CHOICES,
         default=PENDING,
     )
+
+    def __str__(self):
+        return self.REQ_NAME
+
+class RequestedProduct(models.Model):
+    REQ_PROD_ID = models.AutoField(primary_key=True)
+    REQ_PROD_QUANTITY = models.IntegerField(default=0)
+    REQ_PROD_DATE_ADDED = models.DateTimeField(default=timezone.now)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"RequestedProduct ID: {self.REQ_PROD_ID} - Product: {self.product.PROD_NAME}"

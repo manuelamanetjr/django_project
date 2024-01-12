@@ -1,0 +1,30 @@
+{% extends 'ms18/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+    <table class="table table-bordered text-center align-middle">
+        <thead>
+            <tr>
+                <th scope="col">Employee</th>
+                <th scope="col">Date Posted</th>
+                <th scope="col">Name</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for requisition in requisitions %}
+            <tr>
+                <td>{{ requisition.REQ_EMPLOYEE }}</td>
+                <td>{{ requisition.REQ_DATE_POSTED }}</td>
+                <td>{{ requisition.REQ_NAME }}</td>
+                <td>{{ requisition.REQ_QUANTITY }}</td>
+                <td>{{ requisition.REQ_DESCRIPTION }}</td>
+                <td>{{ requisition.REQ_STATUS }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

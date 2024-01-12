@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView,admin_review_orders, admin_approve_order, admin_reject_order
-from .views import add_supplier_to_product
+from .views import add_supplier_to_product, view_requisitions
 from . import views
 
 
@@ -19,9 +19,10 @@ urlpatterns = [
    #path('about/cart/', views.cart_view, name='about-cart'),  # Add a URL pattern for the about/cart page
     path('supplier/new/', SupplierCreateView.as_view(), name='supplier-create'),
     path('purchaseOrder/', views.about, name='ms18-about'),
-    path('requisition/', views.requisition, name='requisition'),
     path('admin/review-orders/', admin_review_orders, name='admin_review_orders'),
     path('admin/approve-order/<int:order_id>/', admin_approve_order, name='admin_approve_order'),
     path('admin/reject-order/<int:order_id>/', admin_reject_order, name='admin_reject_order'),
+    path('requisition/', view_requisitions, name='requisition'),  # Add this line
+
 ]
 
