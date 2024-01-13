@@ -1,53 +1,71 @@
 {% extends 'ms18/base.html' %}
-{% block content %}
-<div class="d-flex justify-content-center">
-    <form method="post" id="requisitionForm" action="{% url 'requisition_form' %}">
-        {% csrf_token %}
-        <div class="d-flex justify-content-center">
-            <input type="text" class="form-control mb-3" id="searchProduct" name="search_product" placeholder="Search by Product Name">
-        </div>
-        <table class="table table-bordered text-center align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">In Stock</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Product Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
-                    <td>{{ product.PROD_QUANTITY }}</td>
-                    <td><input type="number" class="form-control" name="quantity_{{ product.id }}" value="0" min="0"></td>
-                    <td>₱{{ product.PROD_PRICE }}</td>
-                    <td>{{ product.PROD_DESCRIPTION }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="text-center">
-            <input type="submit" class="btn btn-primary" value="Submit Requisition">
-        </div>
-    </form>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#searchProduct").on("input", function () {
-                var searchValue = $(this).val().toLowerCase();
 
-                $("tbody tr").each(function () {
-                    var productName = $(this).find("td:nth-child(1)").text().toLowerCase();
-                    if (productName.includes(searchValue)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-        });
-    </script>
-</div>
+{% block content %}
+{% load static %}
+
+    <!-- Your custom CSS styles -->
+    <style>
+        /* Apply the provided styles */
+        /* ... Your existing styles ... */
+
+        /* Cart-specific styles */
+        /* Update and add more styles here */
+        .cart-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .cart-container h1 {
+            color: #444444;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa; /* Light gray background */
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item span {
+            margin-right: 10px;
+        }
+        .empty-cart {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+
+    <!-- Header section (copied from provided header) -->
+    <header class="site-header">
+
+    </header>
+
+    <!-- Cart content -->
+    <div class="cart-container">
+        <h1>Orders</h1>
+        <a href="{% url 'ms18-home' %}" class="btn btn-primary mb-3">Back to Home</a>
+        {% if req_items %}
+            <div class="list-group">
+                {% for order in req_items %}
+                    <div class="list-group-item cart-item">
+                        <div>
+                            <span class="font-weight-bold">{{ product.PROD_NAME }}</span>
+                            <span class="badge badge-info">Quantity: {{ RequestedProduct.REQ_PROD_QUANTITY }}</span>
+                            <span>Status: <span class="badge {% if order.REQ_STATUS == 'Approved' %}badge-success{% elif order.REQ_STATUS == 'Rejected' %}badge-danger{% else %}badge-warning{% endif %}">{{ Requisition.REQ_STATUS }}</span></span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-cart">No orders.</p>
+        {% endif %}
+    </div>
 {% endblock content %}

@@ -148,9 +148,44 @@ def add_to_cart(request):
     else:
         messages.error(request, 'Please log in to add items to the cart.')
         return redirect('login')  # Redirect to the login page if the user is not authenticated
- 
 
-    
+def add_to_req(request):
+    if request.user.is_authenticated and request.method == 'POST':
+        selected_products = []
+        for key, value in request.POST.items():
+            if key.startswith('quantity_') and int(value) > 0:
+                product_id = key.split('_')[1]
+                try:
+                    product = Product.objects.get(pk=product_id)
+                    selected_products.append(product)
+
+                    # Create a RequestedProduct associated with the Requisition
+                    requested_product = RequestedProduct.objects.create(
+                        REQ_PROD_QUANTITY=int(value),
+                        REQ_PROD_NAME=product.PROD_NAME,
+                        product=product,
+                    )
+
+                    # Create a Requisition associated with the requested_product
+                    requisition = Requisition.objects.create(
+                        REQ_NAME=product.PROD_NAME,
+                        REQ_QUANTITY=int(value),
+                        REQ_DESCRIPTION=product.PROD_DESCRIPTION,
+                        requested_product=requested_product,
+                    )
+
+                except Product.DoesNotExist:
+                    messages.error(request, f"Product with ID {product_id} does not exist.")
+                except Exception as e:
+                    messages.error(request, f"An error occurred while adding product with ID {product_id}: {e}")
+
+        if selected_products:
+            messages.success(request, 'Items added to requisition successfully!')
+
+        return redirect('requisition')  # Redirect to the 'requisition' view or another appropriate view
+    else:
+        messages.error(request, 'Please log in to add items to the requisition.')
+        return redirect('login')  # Redirect to the login page if the user is not authenticated
 def cart(request):
     # Retrieve items in the cart based on the logged-in user
     user = request.user
@@ -268,8 +303,13 @@ def about(request):
 
 def view_requisitions(request):
     requisitions = Requisition.objects.all()
+    context = {
+        'products': Product.objects.all(),
+        'suppliers': Supplier.objects.all()
+    }
+    return render(request, 'ms18/view_requisitions.html', context)
 
-    return render(request, 'ms18/view_requisitions.html', {'requisitions': requisitions})
+
     
 def home(request):
     context = {
@@ -279,3 +319,15 @@ def home(request):
     return render(request, 'ms18/home.html', context)
 
 
+def requisition(request):
+    # Retrieve items in the cart based on the logged-in user
+    user = request.user
+    req_items = Requisition.objects.all()
+
+    # Print out cart_items for inspection
+    print(req_items)
+
+    context = {
+        'req_items': req_items
+    }
+    return render(request, 'ms18/requisition.html', context)

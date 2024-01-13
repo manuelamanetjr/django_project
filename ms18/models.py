@@ -79,14 +79,23 @@ class Cart(models.Model):
         return f"Cart ID: {self.cart_id} - Product: {self.product.PROD_NAME}"
 
 
+
+
+class RequestedProduct(models.Model):
+    REQ_PROD_ID = models.AutoField(primary_key=True)
+    REQ_PROD_QUANTITY = models.IntegerField(default=0)
+    REQ_PROD_DATE_ADDED = models.DateTimeField(default=timezone.now)
+    REQ_PROD_NAME = models.CharField(max_length=100, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"REQ_PROD ID: {self.REQ_PROD_ID} - Product: {self.product.PROD_NAME}"
+
 class Requisition(models.Model):
     REQ_ID = models.AutoField(primary_key=True)
-    REQ_EMPLOYEE = models.CharField(max_length=100)
-    REQ_DATE_POSTED = models.DateTimeField(default=timezone.now)
-    REQ_NAME = models.CharField(max_length=200)
-    REQ_QUANTITY = models.IntegerField(default=0)
-    REQ_DESCRIPTION = models.CharField(max_length=200)
-    
+    REQ_NAME = models.CharField(max_length=100)
+    REQ_QUANTITY = models.CharField(max_length=100, default=0)
+    REQ_DESCRIPTION = models.CharField(max_length=200, default='')
     APPROVED = 'Approved'
     PENDING = 'Pending'
     REJECTED = 'Rejected'
@@ -95,20 +104,15 @@ class Requisition(models.Model):
         (PENDING, 'Pending'),
         (REJECTED, 'Rejected'),
     ]
-    REQ_STATUS = models.CharField(
+    status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default=PENDING,
     )
+    
+    requested_product = models.ForeignKey(RequestedProduct, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.REQ_NAME
+    @property
+    def REQ_STATUS(self):
+        return self.status
 
-class RequestedProduct(models.Model):
-    REQ_PROD_ID = models.AutoField(primary_key=True)
-    REQ_PROD_QUANTITY = models.IntegerField(default=0)
-    REQ_PROD_DATE_ADDED = models.DateTimeField(default=timezone.now)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"RequestedProduct ID: {self.REQ_PROD_ID} - Product: {self.product.PROD_NAME}"
