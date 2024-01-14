@@ -6,7 +6,7 @@ from django.http import HttpResponseBadRequest
 from  django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Product, PurchaseOrder, Cart, Supplier
+from .models import Product, PurchaseOrder, Cart, Supplier, RequestedProduct, Requisition
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib import messages
@@ -14,7 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -266,13 +266,6 @@ def about(request):
     return render(request, 'ms18/about.html', {'products': products})
 
     
-def home(request):
-    context = {
-        'products': Product.objects.all(),
-        'suppliers': Supplier.objects.all()
-    }
-    return render(request, 'ms18/home.html', context)
-
 
 def add_requisitions(request):
     context = {
@@ -281,3 +274,37 @@ def add_requisitions(request):
     }
     return render(request, 'ms18/add_requisition.html', context)
 
+def add_to_req(request):
+
+    if request.method == 'POST':
+        selected_products = []
+        for key, value in request.POST.items():
+            if key.startswith('quantity_') and int(value) > 0:
+                product_id = key.split('_')[1]
+                try:
+                    product = Product.objects.get(pk=product_id)
+                    selected_products.append(product)
+                    
+                    # Get or create a User instance
+                    user_instance, created = User.objects.get_or_create(username=request.user.username)
+                    
+                    Requisition.objects.create(
+                        REQ_EMPLOYEE=user_instance,
+                    )
+
+                    
+                except Product.DoesNotExist:
+                    messages.error(request, f"Product with ID {product_id} does not exist.")
+                except Exception as e:
+                    messages.error(request, f"An error occurred while adding product with ID {product_id}: {e}")
+        
+        if selected_products:
+            messages.success(request, 'Items added to Requisition successfully!')
+        
+    return redirect('view-requisitions')
+
+def view_requisitions(request):
+    context = {
+        'Requisition': Requisition.objects.all(),
+    }
+    return render(request, 'ms18/requisition_view.html', context)

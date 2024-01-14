@@ -128,8 +128,8 @@
         {% if user.is_authenticated %} 
             <a class="nav-link" href="{% url 'supplier-create' %}">Add Supplier</a>
             <a class="nav-link" href="{% url 'add-requisition' %}">Requisition</a>
-            <a class="nav-link" href="">Requests</a>
-        {% if user.is_superuser %}
+            <a class="nav-link" href="{% url 'view-requisitions' %}">Requests</a>
+        {% if user.is_superuser %} 
             <a class="nav-link" href="{% url 'register' %}">Register</a>
         {% endif %}
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>

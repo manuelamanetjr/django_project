@@ -1,0 +1,29 @@
+{% extends 'ms18/base.html' %}
+{% block content %}
+  <center><h1><b>Requisitions</b></h1></center>
+  <div class="d-flex justify-content-center">
+    <table class="table table-bordered text-center align-middle">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Status</th>
+            <th scope="col">Date Created</th>
+            <th scope="col">SUPPLIER ID</th>
+            <th scope="col">Employee</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for Requisitions in Requisition %}
+            <tr>
+              <td>{{ Requisitions.REQ_ID }}</td>
+              <td>{{ Requisitions.REQ_STATUS }}</td>
+              <td>{{ Requisitions.REQ_DATE_CREATEDAT }}</td>
+              <td>{{ Requisitions.Supplier_id }}</td>
+              <td>{{ Requisitions.REQ_EMPLOYEE }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+  </div>
+{% endblock content %}
