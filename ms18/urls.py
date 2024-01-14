@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView,admin_review_orders, admin_approve_order, admin_reject_order
-from .views import add_supplier_to_product, view_requisitions
+from .views import add_supplier_to_product, add_requisitions
 from . import views
 
 
@@ -11,7 +11,6 @@ urlpatterns = [
     path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
     path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
     path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
-    path('add-to-req/', views.add_to_req, name='add-to-req'),
     path('cart/', views.cart, name='cart'),
     path('remove/<int:cart_id>/', views.remove_from_cart, name='remove-from-cart'),
     path('suppliers/', SupplierListView.as_view(), name='supplier-list'),
@@ -23,7 +22,7 @@ urlpatterns = [
     path('admin/review-orders/', admin_review_orders, name='admin_review_orders'),
     path('admin/approve-order/<int:order_id>/', admin_approve_order, name='admin_approve_order'),
     path('admin/reject-order/<int:order_id>/', admin_reject_order, name='admin_reject_order'),
-    path('requisition/', view_requisitions, name='requisition'),  # Add this line
+    path('AddRequisition/', views.add_requisitions, name='add-requisition'),  
 
 ]
 
