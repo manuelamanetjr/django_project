@@ -53,6 +53,7 @@ class ProductDetailView(DetailView):
             raise Http404("Supplier does not exist for this product.")
 
         return context
+
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     fields = ['PROD_NAME', 'PROD_DESCRIPTION', 'PROD_IMAGE', 'PROD_QUANTITY', 'PROD_PRICE', 'supplier']
@@ -277,7 +278,7 @@ def add_requisitions(request):
 def add_to_req(request):
     if request.method == 'POST':
         selected_supplier_id = request.POST.get('hidden_supplier_id')
-
+        search_supplier_name = request.POST.get('search_supplier_name', '')  # Example: retrieving from POST data
         if not selected_supplier_id:
             messages.error(request, "No supplier selected.")
             return redirect('view-requisitions')
@@ -331,7 +332,28 @@ def add_to_req(request):
 
 
 def view_requisitions(request):
+    requisitions = Requisition.objects.order_by('-REQ_ID')
     context = {
-        'Requisition': Requisition.objects.all(),
+        'Requisition': requisitions,
     }
     return render(request, 'ms18/requisition_view.html', context)
+
+def approve_requisition(request, req_id):
+    requisition = Requisition.objects.get(pk=req_id)
+    requisition.approve()  # Implement a method in your Requisition model to handle approval
+    messages.success(request, f'Requisition {req_id} approved successfully!')
+    return redirect('view-requisitions')
+
+def reject_requisition(request, req_id):
+    requisition = Requisition.objects.get(pk=req_id)
+    requisition.reject()  # Implement a method in your Requisition model to handle rejection
+    messages.success(request, f'Requisition {req_id} rejected successfully!')
+    return redirect('view-requisitions')
+
+
+def RequisitionDetailView(request):
+    requested_prods = RequestedProduct.objects.order_by('-REQ_ID')
+    context = {
+        'requested_prods': requested_prods,
+    }
+    return render(request, 'ms18/requested_prod_view.html', context)

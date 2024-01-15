@@ -1,33 +1,44 @@
 {% extends 'ms18/base.html' %}
+
 {% block content %}
   <center><h1><b>Requisitions</b></h1></center>
   <div class="d-flex justify-content-center">
     <table class="table table-bordered text-center align-middle">
-        <thead>
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Status</th>
+          <th scope="col">Date Created</th>
+          <th scope="col">SUPPLIER ID</th>
+          <th scope="col">Employee</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for requisition in Requisition %}
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Status</th>
-            <th scope="col">Date Created</th>
-            <th scope="col">SUPPLIER ID</th>
-            <th scope="col">Employee</th>
-
+            <td><a href="{% url 'product-detail' requisition.REQ_ID %}">{{ requisition.REQ_ID }}</a></td>
+            <td>{{ requisition.REQ_STATUS }}</td>
+            <td>{{ requisition.REQ_DATE_CREATEDAT }}</td>
+            <td>{{ requisition.supplier.SUPPLIER_ID }}</td>
+            <td>{{ requisition.REQ_EMPLOYEE.username }}</td>
+            <td>
+              {% if requisition.REQ_STATUS == 'Pending' %}
+                <form method="post" action="{% url 'approve_requisition' requisition.REQ_ID %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+                <form method="post" action="{% url 'reject_requisition' requisition.REQ_ID %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Reject</button>
+                </form>
+              {% else %}
+                None
+              {% endif %}
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {% for Requisitions in Requisition %}
-            <tr>
-              <td>{{ Requisitions.REQ_ID }}</td>
-              <td>{{ Requisitions.REQ_STATUS }}</td>
-              <td>{{ Requisitions.REQ_DATE_CREATEDAT }}</td>
-              <td>{{ Requisitions.supplier.SUPPLIER_ID }}</td>
-              <td>{{ Requisitions.REQ_EMPLOYEE.username }}</td>
-              
-
-              
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock content %}

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView,admin_review_orders, admin_approve_order, admin_reject_order
-from .views import add_supplier_to_product, add_to_req, view_requisitions
+from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView,admin_review_orders, admin_approve_order, admin_reject_order, RequisitionDetailView
+from .views import add_supplier_to_product, add_to_req, view_requisitions, approve_requisition, reject_requisition
 from . import views
 
 
@@ -25,5 +25,8 @@ urlpatterns = [
     path('AddRequisition/', views.add_requisitions, name='add-requisition'),  
     path('add-to-req/', views.add_to_req, name='add_to_req'),
     path('ViewRequisition/', views.view_requisitions, name='view-requisitions'), 
+    path('approve_requisition/<int:req_id>/', views.approve_requisition, name='approve_requisition'),
+    path('reject_requisition/<int:req_id>/', views.reject_requisition, name='reject_requisition'),
+    path('requisition/<int:pk>/', RequisitionDetailView, name='requested-product-view'),
 ]
 

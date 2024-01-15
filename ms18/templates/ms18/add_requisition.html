@@ -4,7 +4,7 @@
     <form method="post" id="quantityForm" action="/add-to-req/">
         {% csrf_token %}
         <div class="d-flex justify-content-center">
-            <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
+            <input type="text" class="form-control mb-3" id="searchSupplier" name="search_supplier_name" placeholder="Search by Supplier Name">
         </div>
     
         <table class="table table-bordered text-center align-middle">
@@ -20,31 +20,31 @@
                 </tr>   
             </thead>
             <tbody>
-                {% for product in products %}
-                    <tr class="product-row" style="display: none;">
+                {% for product in products %} 
+                    <tr class="product-row" style="display: none;" data-supplier-name="{{ product.supplier.SUPPLIER_NAME }}">
                         <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
                         <td>{{ product.supplier.SUPPLIER_NAME }}</td>
-                        <td class="{% if product.PROD_QUANTITY < 10 %}verylow
-                                   {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
-                                   {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
-                                   {% else %}veryhigh
-                                   {% endif %}">    
-                            {% if product.PROD_QUANTITY < 10 %}
-                                Very Low
-                            {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
-                                Low
-                            {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
-                                High
-                            {% else %}
-                                Very High    
-                            {% endif %}
-                        </td>
-                        <td>{{ product.PROD_QUANTITY }}</td>
-                        <td><input type="number" class="form-control" style="width: 80px;" name="quantity_{{ product.id }}" value="0" min="0"></td>
-                        <td>{{ product.PROD_DESCRIPTION }}</td>
-                        <td>{{ product.supplier.SUPPLIER_ID }}</td>
-                        <input type="hidden" name="hidden_supplier_id" id="hidden_supplier_id" value="{{ product.supplier.SUPPLIER_ID }}">
-                    </tr>
+                            <td class="{% if product.PROD_QUANTITY < 10 %}verylow
+                                    {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
+                                    {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
+                                    {% else %}veryhigh
+                                    {% endif %}">    
+                                {% if product.PROD_QUANTITY < 10 %}
+                                    Very Low
+                                {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
+                                    Low
+                                {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
+                                    High
+                                {% else %}
+                                    Very High    
+                                {% endif %}
+                            </td>
+                            <td>{{ product.PROD_QUANTITY }}</td>
+                            <td><input type="number" class="form-control" style="width: 80px;" name="quantity_{{ product.id }}" value="0" min="0"></td>
+                            <td>{{ product.PROD_DESCRIPTION }}</td>
+                            <td>{{ product.supplier.SUPPLIER_ID }}</td>
+                            <td><input  type="hidden" class="form-control" style="width: 80px;" name="hidden_supplier_id" value="{{ product.supplier.SUPPLIER_ID }}" min="0"></td>
+                        </tr>
                 {% endfor %} 
             </tbody>
         </table>
@@ -55,17 +55,18 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
+
+            
+
             $("#searchSupplier").on("input", function () {
                 var searchValue = $(this).val().toLowerCase();
 
-                if (searchValue === "") {
-                    $(".product-row").hide();
-                } else {
-                    $(".product-row").hide().filter(function () {
-                        var supplierName = $(this).find("td:nth-child(2)").text().toLowerCase();
+                $(".product-row").hide().filter(function () {
+                        var supplierName = $(this).data("supplier-name").toLowerCase();
                         return supplierName.includes(searchValue);
                     }).show();
-                }
+
+                    $(".product-row").not(":visible").remove();
             });
         });
     </script>

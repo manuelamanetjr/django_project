@@ -96,6 +96,20 @@ class Requisition(models.Model):
         choices=STATUS_CHOICES,
         default=PENDING,
     )
+    
+    def approve(self):
+        if self.REQ_STATUS == 'Pending':
+            # Update status to 'Approved'
+            self.REQ_STATUS = 'Approved'
+            self.save()
+            # Adjust product quantities or perform other necessary actions
+
+    def reject(self):
+        if self.REQ_STATUS == 'Pending':
+            # Update status to 'Rejected'
+            self.REQ_STATUS = 'Rejected'
+            self.save()
+            # Perform any additional cleanup or actions
 
 
 class RequestedProduct(models.Model):
