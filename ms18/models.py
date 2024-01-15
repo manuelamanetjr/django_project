@@ -78,19 +78,11 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart ID: {self.cart_id} - Product: {self.product.PROD_NAME}"
 
-class RequestedProduct(models.Model):
-    REQUESTED_PRODUCT_ID = models.AutoField(primary_key=True)
-    REQUESTED_PRODUCT_NAME = models.CharField(max_length=100, null=True, blank=True)
-    REQUESTED_PRODUCT_QUANTITY = models.PositiveIntegerField(default=0)
-    Product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-
 class Requisition(models.Model):
     REQ_ID = models.AutoField(primary_key=True)
     REQ_DATE_CREATEDAT = models.DateTimeField(default=timezone.now)
     REQ_EMPLOYEE = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True, blank=True)
-    requested_products = models.ManyToManyField(RequestedProduct)
     APPROVED = 'Approved'
     PENDING = 'Pending'
     REJECTED = 'Rejected'
@@ -104,6 +96,17 @@ class Requisition(models.Model):
         choices=STATUS_CHOICES,
         default=PENDING,
     )
+
+
+class RequestedProduct(models.Model):
+    REQUESTED_PRODUCT_ID = models.AutoField(primary_key=True)
+    REQUESTED_PRODUCT_NAME = models.CharField(max_length=100, null=True, blank=True)
+    REQUESTED_PRODUCT_QUANTITY = models.PositiveIntegerField(default=0)
+    Product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    Requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE, null=True, blank=True)
+
+
+
 
 
 

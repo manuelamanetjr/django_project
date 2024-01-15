@@ -290,16 +290,42 @@ def add_to_req(request):
             messages.error(request, f"Supplier with ID {selected_supplier_id} does not exist.")
             return redirect('view-requisitions')
 
-        # Use the correct field name for the employee in your Requisition model
         requisition = Requisition.objects.create(
-            REQ_EMPLOYEE=user_instance,  # Use the correct field name
+            REQ_EMPLOYEE=user_instance,
             supplier=supplier,
         )
 
-        # Save the created Requisition object
-        requisition.save()
+        products_added = []
 
-        messages.success(request, 'Items added to Requisition successfully!')
+        for key, value in request.POST.items():
+            if key.startswith('quantity_') and int(value) > 0:
+                product_id = key.split('_')[1]
+                try:
+                    product = Product.objects.get(pk=product_id)
+                    quantity = request.POST.get(f'quantity_{product.id}', 0)
+                    products_added.append(product.PROD_NAME)
+
+                    # Create RequestedProduct without assigning Requisition
+                    requested_product = RequestedProduct.objects.create(
+                        REQUESTED_PRODUCT_NAME=product.PROD_NAME,
+                        REQUESTED_PRODUCT_QUANTITY=quantity,
+                        Product=product,
+                    )
+
+                    # Assign the Requisition to the RequestedProduct
+                    requested_product.Requisition = requisition
+                    requested_product.save()
+
+                except Product.DoesNotExist:
+                    messages.error(request, f"Product with ID {product_id} does not exist.")
+                except Exception as e:
+                    messages.error(request, f"An error occurred while adding product with ID {product_id}: {e}")
+
+        if products_added:
+            requisition.save()
+            messages.success(request, f'Products ({", ".join(products_added)}) added to Requisition successfully!')
+        else:
+            messages.warning(request, 'No products were added to the Requisition.')
 
     return redirect('view-requisitions')
 

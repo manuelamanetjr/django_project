@@ -6,10 +6,7 @@
         <div class="d-flex justify-content-center">
             <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
         </div>
-        {% if products %}
-            {# Assuming that the first product in the list has the same supplier for simplicity #}
-            <input type="hidden" name="hidden_supplier_id" id="hidden_supplier_id" value="{{ products.0.supplier.SUPPLIER_ID }}">
-        {% endif %}
+    
         <table class="table table-bordered text-center align-middle">
             <thead>
                 <tr>
@@ -46,6 +43,7 @@
                         <td><input type="number" class="form-control" style="width: 80px;" name="quantity_{{ product.id }}" value="0" min="0"></td>
                         <td>{{ product.PROD_DESCRIPTION }}</td>
                         <td>{{ product.supplier.SUPPLIER_ID }}</td>
+                        <input type="hidden" name="hidden_supplier_id" id="hidden_supplier_id" value="{{ product.supplier.SUPPLIER_ID }}">
                     </tr>
                 {% endfor %} 
             </tbody>
