@@ -10,6 +10,7 @@
             <th scope="col">Date Created</th>
             <th scope="col">SUPPLIER ID</th>
             <th scope="col">Employee</th>
+
           </tr>
         </thead>
         <tbody>
@@ -18,8 +19,11 @@
               <td>{{ Requisitions.REQ_ID }}</td>
               <td>{{ Requisitions.REQ_STATUS }}</td>
               <td>{{ Requisitions.REQ_DATE_CREATEDAT }}</td>
-              <td>{{ Requisitions.Supplier_id }}</td>
-              <td>{{ Requisitions.REQ_EMPLOYEE }}</td>
+              <td>{{ Requisitions.supplier.SUPPLIER_ID }}</td>
+              <td>{{ Requisitions.REQ_EMPLOYEE.username }}</td>
+              
+
+              
             </tr>
           {% endfor %}
         </tbody>

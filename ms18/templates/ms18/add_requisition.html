@@ -6,6 +6,10 @@
         <div class="d-flex justify-content-center">
             <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
         </div>
+        {% if products %}
+            {# Assuming that the first product in the list has the same supplier for simplicity #}
+            <input type="hidden" name="hidden_supplier_id" id="hidden_supplier_id" value="{{ products.0.supplier.SUPPLIER_ID }}">
+        {% endif %}
         <table class="table table-bordered text-center align-middle">
             <thead>
                 <tr>
@@ -15,32 +19,34 @@
                     <th scope="col">In Stock</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Product Description</th>
+                    <th scope="col">Supp ID</th>
                 </tr>   
             </thead>
             <tbody>
                 {% for product in products %}
-                <tr class="product-row" style="display: none;">
-                    <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
-                    <td>{{ product.supplier.SUPPLIER_NAME }}</td>
-                    <td class="{% if product.PROD_QUANTITY < 10 %}verylow
-                               {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
-                               {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
-                               {% else %}veryhigh
-                               {% endif %}">    
-                        {% if product.PROD_QUANTITY < 10 %}
-                            Very Low
-                        {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
-                            Low
-                        {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
-                            High
-                        {% else %}
-                            Very High    
-                        {% endif %}
-                    </td>
-                    <td>{{ product.PROD_QUANTITY }}</td>
-                    <td><input type="number" class="form-control" style="width: 80px;" name="quantity_{{ product.id }}" value="0" min="0"></td>
-                    <td>{{ product.PROD_DESCRIPTION }}</td>
-                </tr>
+                    <tr class="product-row" style="display: none;">
+                        <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
+                        <td>{{ product.supplier.SUPPLIER_NAME }}</td>
+                        <td class="{% if product.PROD_QUANTITY < 10 %}verylow
+                                   {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
+                                   {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
+                                   {% else %}veryhigh
+                                   {% endif %}">    
+                            {% if product.PROD_QUANTITY < 10 %}
+                                Very Low
+                            {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
+                                Low
+                            {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
+                                High
+                            {% else %}
+                                Very High    
+                            {% endif %}
+                        </td>
+                        <td>{{ product.PROD_QUANTITY }}</td>
+                        <td><input type="number" class="form-control" style="width: 80px;" name="quantity_{{ product.id }}" value="0" min="0"></td>
+                        <td>{{ product.PROD_DESCRIPTION }}</td>
+                        <td>{{ product.supplier.SUPPLIER_ID }}</td>
+                    </tr>
                 {% endfor %} 
             </tbody>
         </table>
