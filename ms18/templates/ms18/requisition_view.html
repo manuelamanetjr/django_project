@@ -8,9 +8,9 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Status</th>
-          <th scope="col">Date Created</th>
+          <th scope="col">Date Requested</th>
           <th scope="col">SUPPLIER ID</th>
-          <th scope="col">Employee</th>
+          <th scope="col">Supplier</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -18,9 +18,11 @@
         {% for requisition in Requisition %}
           <tr>
             <td><a href="{% url 'requested-product-view' requisition.REQ_ID %}">{{ requisition.REQ_ID }}</a></td>
-            <td>{{ requisition.REQ_STATUS }}</td>
+            <td style="{% if requisition.REQ_STATUS == 'Approved' %}color: green;{% elif requisition.REQ_STATUS == 'Rejected' %}color: red;{% endif %}">
+              {{ requisition.REQ_STATUS }}
+          </td>
             <td>{{ requisition.REQ_DATE_CREATEDAT }}</td>
-            <td>{{ requisition.supplier.SUPPLIER_ID }}</td>
+            <td>{{ requisition.supplier.SUPPLIER_NAME }}</td>
             <td>{{ requisition.REQ_EMPLOYEE.username }}</td>
             <td>
               {% if requisition.REQ_STATUS == 'Pending' %}
