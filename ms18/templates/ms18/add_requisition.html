@@ -55,18 +55,19 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
-
-            
-
             $("#searchSupplier").on("input", function () {
                 var searchValue = $(this).val().toLowerCase();
-
-                $(".product-row").hide().filter(function () {
+    
+                if (searchValue === "") {
+                    // If search bar is empty, hide all rows
+                    $(".product-row").hide();
+                } else {
+                    // If search bar is not empty, filter and show matching rows
+                    $(".product-row").hide().filter(function () {
                         var supplierName = $(this).data("supplier-name").toLowerCase();
                         return supplierName.includes(searchValue);
                     }).show();
-
-                    $(".product-row").not(":visible").remove();
+                }
             });
         });
     </script>

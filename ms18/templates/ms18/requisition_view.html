@@ -17,7 +17,7 @@
       <tbody>
         {% for requisition in Requisition %}
           <tr>
-            <td><a href="{% url 'product-detail' requisition.REQ_ID %}">{{ requisition.REQ_ID }}</a></td>
+            <td><a href="{% url 'requested-product-view' requisition.REQ_ID %}">{{ requisition.REQ_ID }}</a></td>
             <td>{{ requisition.REQ_STATUS }}</td>
             <td>{{ requisition.REQ_DATE_CREATEDAT }}</td>
             <td>{{ requisition.supplier.SUPPLIER_ID }}</td>

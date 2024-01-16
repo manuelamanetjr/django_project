@@ -1,22 +1,8 @@
 {% extends 'ms18/base.html' %}
-{% block content %}   
-    <article class="media content-section">
-        <div class="media-body">
-            <h2 class="article-title">REQ_ID: {{ object.REQUESTED_PRODUCT_ID }}</h2>
-            <h6 class="article-title">Quantity: {{ object.REQUESTED_PRODUCT_QUANTITY }}</h6>
-            <p class="article-content">{{ object.Product }}</p>
-            <p class="article-content">Supplier: {{ supplier_name }}</p>
-            <img src="{{ object.PROD_IMAGE.url }}">
-        </div>
-    </article>
-{% endblock content %}
-
-
-{% extends 'ms18/base.html' %}
 {% block content %}
   <center><h1><b>Requested Products</b></h1></center>
   <div class="d-flex justify-content-center">
-    <table class="table table-bordered text-center align-middle">
+    <table class="table table-bordered text-center align-middle" id="printTable">
       <thead>
         <tr>
           <th scope="col">Name</th>
@@ -25,12 +11,25 @@
       </thead>
       <tbody>
         {% for requested_prod in requested_prods %}
-          <tr>
-            <td>{{ requested_prod.Product.PROD_NAME }}</td>
-            <td>Quantity: {{ requested_prod.REQUESTED_PRODUCT_QUANTITY }}</td>
+          <tr> 
+            <td><a href="{% url 'product-detail' requested_prod.Product_id %}">{{ requested_prod.Product.PROD_NAME }}</a></td>
+            <td>{{ requested_prod.REQUESTED_PRODUCT_QUANTITY }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
+  <div class="text-center">
+    <button class="btn btn-primary" onclick="printTableToPDF()">Print</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+  <script>
+    function printTableToPDF() {
+      var element = document.getElementById('printTable');
+      html2pdf(element);
+    }
+  </script>
+
 {% endblock content %}

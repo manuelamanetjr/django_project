@@ -351,9 +351,12 @@ def reject_requisition(request, req_id):
     return redirect('view-requisitions')
 
 
-def RequisitionDetailView(request):
-    requested_prods = RequestedProduct.objects.order_by('-REQ_ID')
+def RequestedProdView(request, pk):
+    requisition = get_object_or_404(Requisition, REQ_ID=pk)
+    requested_prods = RequestedProduct.objects.filter(Requisition=requisition)
+    
     context = {
         'requested_prods': requested_prods,
     }
     return render(request, 'ms18/requested_prod_view.html', context)
+
