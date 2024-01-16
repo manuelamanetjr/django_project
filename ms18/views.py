@@ -368,3 +368,24 @@ def RequestedProdView(request, pk):
     }
     return render(request, 'ms18/requested_prod_view.html', context)
 
+def generate_receipt(request):
+    user = request.user
+    cart_items = PurchaseOrder.objects.filter(ORD_EMPLOYEE=user.username)
+
+    # Customize the receipt content based on your requirements
+    receipt_content = f"Orders from {user.username}\n\n"
+    overall_total = 0
+    
+    for order in cart_items:
+        total_price = order.ORD_QUANTITY * order.ORD_PRICE
+        overall_total += total_price
+
+        receipt_content += f"Order {order.id}:\n"
+        receipt_content += f"Product: {order.ORD_NAME}\n"
+        receipt_content += f"Quantity: {order.ORD_QUANTITY}\n"
+        receipt_content += f"Unit Price: ₱{order.ORD_PRICE}\n"
+        receipt_content += f"Status: {order.status}\n\n"
+        receipt_content += f"Overall Total: ₱{overall_total}"
+
+    response = HttpResponse(receipt_content, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="order.txt"'

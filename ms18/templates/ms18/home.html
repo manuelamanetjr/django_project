@@ -1,64 +1,136 @@
 {% extends 'ms18/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-center">
-        <table class="table table-bordered text-center align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">Product Name</th>                    
-                    <th scope="col">Supplier</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Product Description</th>
-                    <th scope="col">Supply Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}   
-                <tr>
-                    <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
-                    <td>{{ product.supplier.SUPPLIER_NAME }}</td>
-                    <td>{{ product.PROD_QUANTITY }}</td>
-                    <td>₱{{ product.PROD_PRICE }}</td>
-                    <td>{{ product.PROD_DESCRIPTION }}</td>
-                    <td class="{% if product.PROD_QUANTITY < 10 %}verylow
-                               {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
-                               {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
-                               {% else %}veryhigh
-                               {% endif %}">    
-                        {% if product.PROD_QUANTITY < 10 %}
-                            Very Low
-                        {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
-                            Low
-                        {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
-                            High
-                        {% else %}
-                            Very High    
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <style>
-            .verylow {
-                background-color: red;
-                color: white;
-            }
-        
-            .low {
-                background-color: orange;
-                color: white;
-            }
-        
-            .high {
-                background-color: yellowgreen;
-                color: white;
-            }
-
-            .veryhigh {
-                background-color: green;
-                color: white;
-            }
-        </style> 
+<head>
+    <!-- ... other head elements ... -->
+    <script src="https://kit.fontawesome.com/58cfe454f0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0/css/all.css" integrity="your-integrity-code" crossorigin="anonymous" />
+</head>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-primary" id="voiceSearchBtn"><i class="fas fa-microphone"></i></button>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Product Inventory</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered text-center align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product Name</th>                    
+                                <th scope="col">Supplier</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Product Description</th>
+                                <th scope="col">Supply Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}   
+                            <tr>
+                                <td><a href="{% url 'product-detail' product.id %}">{{ product.PROD_NAME }}</a></td>
+                                <td>{{ product.supplier.SUPPLIER_NAME }}</td>
+                                <td>{{ product.PROD_QUANTITY }}</td>
+                                <td>₱{{ product.PROD_PRICE }}</td>
+                                <td>{{ product.PROD_DESCRIPTION }}</td>
+                                <td class="{% if product.PROD_QUANTITY < 10 %}verylow
+                                           {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}low
+                                           {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30 %}high
+                                           {% else %}veryhigh
+                                           {% endif %}">    
+                                    {% if product.PROD_QUANTITY < 10 %}
+                                        Very Low
+                                    {% elif product.PROD_QUANTITY >= 10 and product.PROD_QUANTITY < 20 %}
+                                        Low
+                                    {% elif product.PROD_QUANTITY >= 20 and product.PROD_QUANTITY <= 30%}
+                                        High
+                                    {% else %}
+                                        Very High    
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-center">
+                    {% if user.is_superuser %}
+                    <a href="{% url 'admin:index' %}" class="btn btn-primary">Go to Admin Form</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<style>
+    .verylow {
+        background-color: red;
+        color: white;
+    }
+
+    .low {
+        background-color: orange;
+        color: white;
+    }
+
+    .high {
+        background-color: yellowgreen;
+        color: white;
+    }
+
+    .veryhigh {
+        background-color: green;
+        color: white;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchSupplier").on("input", function () {
+            var searchValue = $(this).val().toLowerCase();
+
+            $("tbody tr").each(function () {
+                var supplierName = $(this).find("td:nth-child(2)").text().toLowerCase();
+                if (supplierName.includes(searchValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Voice search functionality
+        $("#voiceSearchBtn").on("click", function () {
+            startVoiceSearch();
+        });
+
+        function startVoiceSearch() {
+            try {
+                var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'en-US';
+
+                recognition.onresult = function (event) {
+                    var transcript = event.results[0][0].transcript;
+                    $("#searchSupplier").val(transcript);
+                    triggerInputEvent();
+                };
+
+                recognition.start();
+            } catch (error) {
+                console.error("Error starting voice recognition:", error);
+            }
+        }
+
+        function triggerInputEvent() {
+            var inputElement = $("#searchSupplier")[0];
+            var event = new Event('input', { bubbles: true });
+            inputElement.dispatchEvent(event);
+        }
+    });
+</script>
 {% endblock content %}

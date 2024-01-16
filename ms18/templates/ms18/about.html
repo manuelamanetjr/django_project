@@ -1,11 +1,17 @@
 {% extends 'ms18/base.html' %}
-
 {% block content %}
+<head>
+    <!-- ... other head elements ... -->
+    <script src="https://kit.fontawesome.com/58cfe454f0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0/css/all.css" integrity="your-integrity-code" crossorigin="anonymous" />
+</head>
 <div class="d-flex justify-content-center">
     <form method="post" id="quantityForm" action="/add-to-cart/">
         {% csrf_token %}
         <div class="d-flex justify-content-center">
             <input type="text" class="form-control mb-3" id="searchSupplier" placeholder="Search by Supplier Name">
+            <button type="button" class="btn btn-primary" id="voiceSearchBtn"><i class="fas fa-microphone"></i></button>
+
         </div>
         <table class="table table-bordered text-center align-middle">
             <thead>
@@ -35,7 +41,9 @@
             <input type="submit" class="btn btn-primary" value="Order">
         </div>
     </form>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
         $("#searchSupplier").on("input", function () {
@@ -50,7 +58,34 @@
                 }
             });
         });
+
+        // Voice search functionality
+        $("#voiceSearchBtn").on("click", function () {
+            startVoiceSearch();
+        });
+
+        function startVoiceSearch() {
+            try {
+                var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'en-US';
+
+                recognition.onresult = function (event) {
+                    var transcript = event.results[0][0].transcript;
+                    $("#searchSupplier").val(transcript);
+                    triggerInputEvent();
+                };
+
+                recognition.start();
+            } catch (error) {
+                console.error("Error starting voice recognition:", error);
+            }
+        }
+
+        function triggerInputEvent() {
+            var inputElement = $("#searchSupplier")[0];
+            var event = new Event('input', { bubbles: true });
+            inputElement.dispatchEvent(event);
+        }
     });
 </script>
-</div>
 {% endblock content %}
