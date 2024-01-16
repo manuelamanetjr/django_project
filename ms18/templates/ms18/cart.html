@@ -41,31 +41,39 @@
             text-align: center;
             color: #666;
         }
+        .back-to-inventory-btn {
+            margin-top: 20px; /* Adjust the margin as needed */
+        }
     </style>
 
     <!-- Header section (copied from provided header) -->
     <header class="site-header">
 
     </header>
-
-    <!-- Cart content -->
-    <div class="cart-container">
-        <h1>Orders</h1>
-        <a href="{% url 'ms18-home' %}" class="btn btn-primary mb-3">Back to Home</a>
-        {% if cart_items %}
-            <div class="list-group">
-                {% for order in cart_items %}
-                    <div class="list-group-item cart-item">
+        <!-- Cart content -->       
+        <div class="cart-container">
+            <h1>Orders</h1>
+            {% if cart_items %}
+                <div class="list-group">
+                    {% for order in cart_items %}
+                    <div class="cart-item">
                         <div>
                             <span class="font-weight-bold">{{ order.ORD_NAME }}</span>
                             <span class="badge badge-info">Quantity: {{ order.ORD_QUANTITY }}</span>
+                            <span>Total Price: ₱{{ order.total_price }}</span>
                             <span>Status: <span class="badge {% if order.status == 'Approved' %}badge-success{% elif order.status == 'Rejected' %}badge-danger{% else %}badge-warning{% endif %}">{{ order.status }}</span></span>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-cart">No orders.</p>
-        {% endif %}
-    </div>
+                    {% endfor %}
+                </div>
+                <!-- Form for generating receipt -->
+                <form method="post" action="{% url 'generate-receipt' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary mt-3">Generate Order</button>
+                </form>
+                <a href="{% url 'ms18-home' %}" class="btn btn-primary mt-3">Back to Inventory</a>
+            {% else %}
+                <p class="empty-cart">No orders.</p>
+            {% endif %}
+        </div>
 {% endblock content %}

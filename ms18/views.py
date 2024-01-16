@@ -120,6 +120,8 @@ def about(request):
     return render(request, 'ms18/about.html', {'products': products})
     
     
+from .models import Cart
+
 def add_to_cart(request):
     if request.user.is_authenticated and request.method == 'POST':
         selected_products = []
@@ -128,52 +130,61 @@ def add_to_cart(request):
                 product_id = key.split('_')[1]
                 try:
                     product = Product.objects.get(pk=product_id)
+
+                    # Calculate the order price based on the associated product's price
+                    order_price = product.PROD_PRICE
+
                     selected_products.append(product)
-                    # Create a PurchaseOrder for the selected product
-                    PurchaseOrder.objects.create(
+
+                    # Create a PurchaseOrder for the selected product with a pending status
+                    order = PurchaseOrder.objects.create(
                         ORD_EMPLOYEE=request.user.username,
                         ORD_DATE_POSTED=timezone.now(),
                         ORD_NAME=product.PROD_NAME,
                         ORD_QUANTITY=int(value),
-                        ORD_DESCRIPTION=product.PROD_DESCRIPTION
+                        ORD_DESCRIPTION=product.PROD_DESCRIPTION,
+                        ORD_PRICE=order_price,  # Set the order price based on the product's price
+                        status=PurchaseOrder.PENDING  # Set the initial status to pending
                     )
+
+                    # Create a Cart entry for the selected product and purchase order
+                    Cart.objects.create(
+                        CART_QUANTITY=int(value),
+                        CART_DATE_ADDED=timezone.now(),
+                        user=request.user,
+                        product=product,
+                        PurchaseOrder=order
+                    )
+
                 except Product.DoesNotExist:
                     messages.error(request, f"Product with ID {product_id} does not exist.")
                 except Exception as e:
                     messages.error(request, f"An error occurred while adding product with ID {product_id}: {e}")
-        
+
         if selected_products:
-            messages.success(request, 'Items added to cart successfully!')
-        
+            messages.success(request, 'Items added to orders successfully! Pending admin approval.')
+
         return redirect('cart')  # Redirect to a 'cart' view or another appropriate view
     else:
-        messages.error(request, 'Please log in to add items to the cart.')
+        messages.error(request, 'Please log in to add items to the orders.')
         return redirect('login')  # Redirect to the login page if the user is not authenticated
 
 
 def cart(request):
-    # Retrieve items in the cart based on the logged-in user
     user = request.user
     cart_items = PurchaseOrder.objects.filter(ORD_EMPLOYEE=user.username)
 
-    # Print out cart_items for inspection
-    print(cart_items)
+    overall_total = 0
+
+    for order in cart_items:
+        order.total_price = order.ORD_QUANTITY * order.ORD_PRICE
+        overall_total += order.total_price
 
     context = {
-        'cart_items': cart_items
+        'cart_items': cart_items,
+        'overall_total': overall_total,
     }
     return render(request, 'ms18/cart.html', context)
-
-
-
-def remove_from_cart(request, cart_id):
-    if request.method == 'POST':
-        cart_item = get_object_or_404(PurchaseOrder, pk=cart_id)
-        cart_item.delete()
-        messages.success(request, "Item removed from cart!")
-        return redirect('cart')
-    else:
-        return HttpResponseBadRequest("Invalid request method") 
 
     
 class SupplierListView(ListView):
@@ -192,7 +203,6 @@ def add_supplier_to_product(request, product_id):
 
         messages.success(request, f'Supplier "{supplier_name}" added to {product.PROD_NAME}.')
         return redirect(reverse('product-detail', args=[product_id]))
-
 
 
 def add_product(request):
@@ -258,6 +268,42 @@ def inventory(request):
         print(f"Product: {product.PROD_NAME}, Quantity: {product.PROD_QUANTITY}")
 
     return render(request, 'ms18/home.html', {'products': products})
+
+
+def generate_receipt(request):
+    user = request.user
+    cart_items = PurchaseOrder.objects.filter(ORD_EMPLOYEE=user.username)
+
+    # Customize the receipt content based on your requirements
+    receipt_content = f"Orders from {user.username}\n\n"
+    overall_total = 0
+    
+    for order in cart_items:
+        total_price = order.ORD_QUANTITY * order.ORD_PRICE
+        overall_total += total_price
+
+        receipt_content += f"Order {order.id}:\n"
+        receipt_content += f"Product: {order.ORD_NAME}\n"
+        receipt_content += f"Quantity: {order.ORD_QUANTITY}\n"
+        receipt_content += f"Unit Price: ₱{order.ORD_PRICE}\n"
+        receipt_content += f"Status: {order.status}\n\n"
+        receipt_content += f"Overall Total: ₱{overall_total}"
+
+    response = HttpResponse(receipt_content, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="order.txt"'
+
+    return response
+
+
+
+
+
+
+
+
+
+
+
 
 
 @login_required
@@ -367,25 +413,3 @@ def RequestedProdView(request, pk):
         'requested_prods': requested_prods,
     }
     return render(request, 'ms18/requested_prod_view.html', context)
-
-def generate_receipt(request):
-    user = request.user
-    cart_items = PurchaseOrder.objects.filter(ORD_EMPLOYEE=user.username)
-
-    # Customize the receipt content based on your requirements
-    receipt_content = f"Orders from {user.username}\n\n"
-    overall_total = 0
-    
-    for order in cart_items:
-        total_price = order.ORD_QUANTITY * order.ORD_PRICE
-        overall_total += total_price
-
-        receipt_content += f"Order {order.id}:\n"
-        receipt_content += f"Product: {order.ORD_NAME}\n"
-        receipt_content += f"Quantity: {order.ORD_QUANTITY}\n"
-        receipt_content += f"Unit Price: ₱{order.ORD_PRICE}\n"
-        receipt_content += f"Status: {order.status}\n\n"
-        receipt_content += f"Overall Total: ₱{overall_total}"
-
-    response = HttpResponse(receipt_content, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename="order.txt"'

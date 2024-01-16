@@ -74,9 +74,10 @@ class Cart(models.Model):
     CART_DATE_ADDED = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    PurchaseOrder= models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"Cart ID: {self.cart_id} - Product: {self.product.PROD_NAME}"
+        return f"Cart ID: {self.CART_ID} - Product: {self.product.PROD_NAME}"
 
 class Requisition(models.Model):
     REQ_ID = models.AutoField(primary_key=True)
