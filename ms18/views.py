@@ -325,6 +325,7 @@ def add_to_req(request):
         if products_added:
             requisition.save()
             messages.success(request, f'Products ({", ".join(products_added)}) added to Requisition successfully!')
+
         else:
             messages.warning(request, 'No products were added to the Requisition.')
 
@@ -341,8 +342,15 @@ def view_requisitions(request):
 def approve_requisition(request, req_id):
     requisition = Requisition.objects.get(pk=req_id)
     requisition.approve()  # Implement a method in your Requisition model to handle approval
+
+    # Update product quantities
+    for requested_product in requisition.requestedproduct_set.all():
+        requested_product.Product.PROD_QUANTITY -= requested_product.REQUESTED_PRODUCT_QUANTITY
+        requested_product.Product.save()
+
     messages.success(request, f'Requisition {req_id} approved successfully!')
     return redirect('view-requisitions')
+
 
 def reject_requisition(request, req_id):
     requisition = Requisition.objects.get(pk=req_id)
