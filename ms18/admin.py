@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, PurchaseOrder, Requisition, RequestedProduct
+from .models import Product, PurchaseOrder, Requisition, RequestedProduct, Supplier
 class PurchaseOrderAdmin(admin.ModelAdmin):
     list_display = ('ORD_EMPLOYEE', 'ORD_DATE_POSTED', 'ORD_NAME', 'ORD_QUANTITY', 'status')
 
@@ -34,3 +34,5 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 admin.site.register(PurchaseOrder, PurchaseOrderAdmin)
 admin.site.register(Requisition)
+admin.site.register(Supplier)
+
