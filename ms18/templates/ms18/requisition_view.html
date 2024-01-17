@@ -25,18 +25,21 @@
             <td>{{ requisition.supplier.SUPPLIER_NAME }}</td>
             <td>{{ requisition.REQ_EMPLOYEE.username }}</td>
             <td>
+              {% if user.is_superuser %} 
               {% if requisition.REQ_STATUS == 'Pending' %}
-                <form method="post" action="{% url 'approve_requisition' requisition.REQ_ID %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-success">Approve</button>
-                </form>
-                <form method="post" action="{% url 'reject_requisition' requisition.REQ_ID %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger">Reject</button>
-                </form>
-              {% else %}
-                None
-              {% endif %}
+              <form method="post" action="{% url 'approve_requisition' requisition.REQ_ID %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Approve</button>
+              </form>
+              <form method="post" action="{% url 'reject_requisition' requisition.REQ_ID %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Reject</button>
+              </form>
+            {% else %}
+              None
+            {% endif %}
+            {% endif %}
+              
             </td>
           </tr>
         {% endfor %}

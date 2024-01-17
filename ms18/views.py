@@ -387,7 +387,20 @@ def view_requisitions(request):
 
 def approve_requisition(request, req_id):
     requisition = Requisition.objects.get(pk=req_id)
-    requisition.approve()  # Implement a method in your Requisition model to handle approval
+
+    # Check if the requisition is already approved or rejected
+    if requisition.REQ_STATUS != 'Pending':
+        messages.error(request, "This requisition has already been processed.")
+        return redirect('view-requisitions')
+
+    # Check if the requested quantity is greater than the available quantity
+    for requested_product in requisition.requestedproduct_set.all():
+        if requested_product.REQUESTED_PRODUCT_QUANTITY > requested_product.Product.PROD_QUANTITY:
+            messages.error(request, f"Requested quantity for {requested_product.Product.PROD_NAME} exceeds available inventory. Please Make a PO for {requested_product.Product.PROD_NAME}")
+            return redirect('view-requisitions')
+
+    # If everything is fine, approve the requisition
+    requisition.approve()
 
     # Update product quantities
     for requested_product in requisition.requestedproduct_set.all():
@@ -396,7 +409,6 @@ def approve_requisition(request, req_id):
 
     messages.success(request, f'Requisition {req_id} approved successfully!')
     return redirect('view-requisitions')
-
 
 def reject_requisition(request, req_id):
     requisition = Requisition.objects.get(pk=req_id)

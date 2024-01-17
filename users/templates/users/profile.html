@@ -1,6 +1,10 @@
 {% extends 'ms18/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<head>
+  <!-- Add this in your head section -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 <div class="content-section">
     <div class="media">
       <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -10,16 +14,34 @@
       </div>
     </div>
     <!-- FORM HERE -->
-          <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4 ">Profile Info</legend>
-                  {{ u_form|crispy }}
-                  {{ p_form|crispy }}           
-            </fieldset>
-            <div class="form-group">             
-                <button class="btn btn-outline-info" type="submit" >Update</button>
-            </div>
-          </form>
-  </div>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4 ">Profile Info</legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}           
+      </fieldset>
+      <div class="form-group">             
+          <button class="btn btn-outline-info" type="button" onclick="confirmUpdate()">Update</button>
+      </div>
+  </form>
+</div>
+
+<script>
+  function confirmUpdate() {
+      Swal.fire({
+          title: "Are you sure you want to update?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, update it!"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // If confirmed, submit the form
+              document.forms[0].submit();
+          }
+      });
+  }
+</script>
 {% endblock content %}

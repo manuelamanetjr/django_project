@@ -55,18 +55,39 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Function to update submit button state
+            function updateSubmitButtonState() {
+                var searchValue = $("#searchSupplier").val().trim();
+                var isSearchEmpty = searchValue === "";
+                $(".btn-primary").prop("disabled", isSearchEmpty);
+            }
+    
+            // Initial state
+            updateSubmitButtonState();
+    
             $("#searchSupplier").on("input", function () {
                 var searchValue = $(this).val().toLowerCase();
     
                 if (searchValue === "") {
-                    // If search bar is empty, hide all rows
+                    // If search bar is empty, hide all rows and disable submit button
                     $(".product-row").hide();
+                    $(".btn-primary").prop("disabled", true);
                 } else {
-                    // If search bar is not empty, filter and show matching rows
+                    // If search bar is not empty, filter and show matching rows, enable submit button
                     $(".product-row").hide().filter(function () {
                         var supplierName = $(this).data("supplier-name").toLowerCase();
                         return supplierName.includes(searchValue);
                     }).show();
+                    $(".btn-primary").prop("disabled", false);
+                }
+            });
+    
+            // Additional check on form submit
+            $("#quantityForm").on("submit", function (event) {
+                var searchValue = $("#searchSupplier").val().trim();
+                if (searchValue === "") {
+                    // Prevent form submission if search bar is empty
+                    event.preventDefault();
                 }
             });
         });
