@@ -11,7 +11,7 @@ python -m pip install Pillow
 mkdir django_project
 cd django_project
 git init
-git pull https://github.com/Charltoon/pythonproject.git
+git pull https://github.com/manuelamanetjr/django_project.git
 pip list
 
 (env error Powershell)
