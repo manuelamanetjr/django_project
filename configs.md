@@ -1,0 +1,74 @@
+pip install virtualenv
+virtualenv django_env
+django_env\Scripts\activate
+cd django_env
+
+pip install django
+python -m pip install bootstrap4
+pip install crispy-bootstrap4
+python -m pip install Pillow
+
+mkdir django_project
+cd django_project
+git init
+git pull https://github.com/manuelamanetjr/django_project.git
+pip list
+
+(env error Powershell)
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+django-admin startproject django_project
+
+(activate the env)
+C:\Users\manue\Desktop\Environment> django_env\Scripts\activate
+(django_env) PS C:\Users\manue\Desktop\Environment> cd django_env\django_project
+
+python manage.py startapp ms18
+python manage.py migrate
+python manage.py createsuperuser
+
+python manage.py makemigrations
+python manage.py sqlmigrate ms18 0001
+CREATE TABLE "ms18_product" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(100) NOT NULL, "content" text NOT NULL, "date_posted" datetime NOT NULL, "author_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "ms18_product_author_id_f6895ce0" ON "ms18_product" ("author_id");
+python manage.py migrate
+
+python manage.py shell
+from ms18.models import Product
+from django.contrib.auth.models import User
+user = User.objects.get(id=1)
+>>> Product_1 = Product(title = 'CPU', content = 'Frist Product!', author_id = user.id)  
+>>> Product_1.save()
+
+INSTALLED_APPS = [
+    'crispy_forms',
+    'bootstrap4',
+]
+python -m pip install bootstrap4
+
+alt solution
+pip install crispy-bootstrap4
+add crispy_bootstrap4 to your list of INSTALLED_APPS.
+
+python -m pip install Pillow
+
+>>> from django.contrib.auth.models import User
+>>> user = User.objects.filter(username='ms18').first()
+>>> user.profile
+>>> user.profile.image
+
+reverse--> returns a url of the route as a string
+
+!!!!!!!!!!!!!!!!
+
+def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+insert into ms18_supplier values ('1', 'Joyo', 'Guadalupe Cebu City', '09768754687');
+insert into ms18_supplier values ('2', 'Nutech', 'Banawa Cebu City', '09548763549');
+insert into ms18_supplier values ('3', 'Green PC', 'Lapu Lapu Cebu City', '09791524836');
+
+insert into ms18_product values ('1', 'Keyboard', 'LGBT lights', null, '', '200', '10', '1');
+
+requested_products
